@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Emergency Blood Donor Finder — Connect with blood donors, track blood bank inventory, and save lives instantly." />
+    <title>BloodLink | Emergency Blood Donor Finder</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon">
+                    <i class="bi bi-droplet-fill"></i>
+                </div>
+                <span class="brand-text">Blood<span class="brand-accent">Link</span></span>
+            </a>
+
+            <!-- Toggler -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Nav Links -->
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html"><i class="bi bi-house-door me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register.html"><i class="bi bi-person-plus me-1"></i>Register</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="dashboard.html"><i
+                                class="bi bi-geo-alt-fill me-1 text-danger"></i>Live Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="search.html"><i class="bi bi-search me-1"></i>Find Donor</a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-nav-admin" href="admin.html"><i class="bi bi-shield-lock me-1"></i>Admin</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== HERO SECTION ====== -->
+    <section class="hero-section" id="hero">
+        <div class="hero-overlay"></div>
+
+        <!-- Floating blood cells decoration -->
+        <div class="blood-cell cell-1"></div>
+        <div class="blood-cell cell-2"></div>
+        <div class="blood-cell cell-3"></div>
+        <div class="blood-cell cell-4"></div>
+
+        <div class="container position-relative" style="z-index:2;">
+            <div class="row align-items-center min-vh-hero">
+                <div class="col-lg-7 hero-content" data-aos="fade-right">
+                    <div class="hero-badge mb-3">
+                        <i class="bi bi-heart-pulse-fill me-2"></i> Emergency Response System
+                    </div>
+                    <h1 class="hero-title">
+                        Every Drop <br />
+                        <span class="text-gradient">Saves a Life.</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Connect with verified blood donors instantly. Track blood bank inventory in real-time and
+                        respond to emergencies with speed and confidence.
+                    </p>
+                    <div class="hero-actions d-flex flex-wrap gap-3 mt-4">
+                        <a href="dashboard.html" class="btn btn-danger fw-bold shadow-lg" style="padding: 12px 24px;">
+                            <i class="bi bi-activity me-2"></i> Open Emergency Dashboard
+                        </a>
+                        <a href="register.html" class="btn btn-hero-primary">
+                            <i class="bi bi-person-plus-fill me-2"></i> Become a Donor
+                        </a>
+                        <a href="search.html" class="btn btn-hero-outline">
+                            <i class="bi bi-search me-2"></i> Find Blood Now
+                        </a>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="hero-stats d-flex flex-wrap gap-4 mt-5">
+                        <div class="stat-item">
+                            <div class="stat-number">5,200+</div>
+                            <div class="stat-label">Registered Donors</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Hospitals Partnered</div>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <div class="stat-number">12K+</div>
+                            <div class="stat-label">Lives Saved</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Visual Card -->
+                <div class="col-lg-5 d-none d-lg-flex justify-content-center">
+                    <div class="hero-card">
+                        <div class="hero-card-header">
+                            <i class="bi bi-hospital-fill me-2"></i> Live Blood Availability
+                        </div>
+                        <div class="blood-types-grid">
+                            <div class="blood-type-card available">
+                                <div class="bt-label">A+</div>
+                                <div class="bt-status">Available</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill" style="width:85%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card available">
+                                <div class="bt-label">B+</div>
+                                <div class="bt-status">Available</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill" style="width:70%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card low">
+                                <div class="bt-label">O-</div>
+                                <div class="bt-status">Low</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill low" style="width:20%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card available">
+                                <div class="bt-label">AB+</div>
+                                <div class="bt-status">Available</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill" style="width:60%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card critical">
+                                <div class="bt-label">O+</div>
+                                <div class="bt-status">Critical</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill critical" style="width:8%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card available">
+                                <div class="bt-label">A-</div>
+                                <div class="bt-status">Available</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill" style="width:50%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card available">
+                                <div class="bt-label">B-</div>
+                                <div class="bt-status">Available</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill" style="width:45%"></div>
+                                </div>
+                            </div>
+                            <div class="blood-type-card low">
+                                <div class="bt-label">AB-</div>
+                                <div class="bt-status">Low</div>
+                                <div class="bt-bar">
+                                    <div class="bt-fill low" style="width:15%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-card-footer">
+                            <i class="bi bi-circle-fill text-success me-1" style="font-size:0.6rem"></i> Updated just
+                            now
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wave divider -->
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f8f9fa" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- ====== FEATURES SECTION ====== -->
+    <section class="features-section py-5" id="features">
+        <div class="container py-4">
+            <div class="section-header text-center mb-5">
+                <span class="section-tag">What We Offer</span>
+                <h2 class="section-title">A Complete Blood Management <span class="text-red">Ecosystem</span></h2>
+                <p class="section-subtitle">From donor registration to live inventory tracking — all in one platform.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card" id="feature-register">
+                        <div class="feature-icon-wrap icon-red">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+                        <h5 class="feature-title">Donor Registration</h5>
+                        <p class="feature-desc">Register as a verified donor in minutes. Provide your blood type,
+                            location, and availability.</p>
+                        <a href="register.html" class="feature-link">Register Now <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Feature 2 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card" id="feature-search">
+                        <div class="feature-icon-wrap icon-crimson">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h5 class="feature-title">Smart Donor Search</h5>
+                        <p class="feature-desc">Filter donors by blood group and city. Get contact details instantly in
+                            any emergency.</p>
+                        <a href="search.html" class="feature-link">Search Donors <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Feature 3 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card" id="feature-bank">
+                        <div class="feature-icon-wrap icon-dark-red">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <h5 class="feature-title">Blood Bank Tracker</h5>
+                        <p class="feature-desc">Real-time tracking of blood unit inventory across registered blood banks
+                            and hospitals.</p>
+                        <a href="search.html" class="feature-link">Check Availability <i
+                                class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <!-- Feature 4 -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card" id="feature-admin">
+                        <div class="feature-icon-wrap icon-maroon">
+                            <i class="bi bi-shield-check-fill"></i>
+                        </div>
+                        <h5 class="feature-title">Admin Dashboard</h5>
+                        <p class="feature-desc">Admins can manage donors, update blood units, and oversee the full
+                            system securely.</p>
+                        <a href="admin.html" class="feature-link">Admin Panel <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== HOW IT WORKS SECTION ====== -->
+    <section class="how-section py-5" id="how-it-works">
+        <div class="container py-4">
+            <div class="section-header text-center mb-5">
+                <span class="section-tag">Simple Process</span>
+                <h2 class="section-title">How <span class="text-red">BloodLink</span> Works</h2>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4 text-center">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <div class="step-icon"><i class="bi bi-person-plus-fill"></i></div>
+                        <h5 class="step-title">Register</h5>
+                        <p class="step-desc">Fill out the donor registration form with your blood type and contact
+                            details.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <div class="step-icon"><i class="bi bi-search"></i></div>
+                        <h5 class="step-title">Search</h5>
+                        <p class="step-desc">Search for compatible donors by blood group or find blood banks near you.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <div class="step-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+                        <h5 class="step-title">Save a Life</h5>
+                        <p class="step-desc">Connect with the donor directly and respond to the emergency in time.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <input type="text" id="city" placeholder="Enter city">
+
+    <button onclick="searchDonors()">Search</button>
+
+    <div id="results"></div>
+    <!-- ====== EMERGENCY BANNER ====== -->
+    <section class="emergency-banner py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mb-3 mb-lg-0">
+                    <h3 class="banner-title mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>In a Blood
+                        Emergency?</h3>
+                    <p class="banner-subtitle mb-0">Search our database of 5,200+ verified donors right now. Every
+                        second counts.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="search.html" class="btn btn-banner" id="emergency-search-btn">
+                        <i class="bi bi-search me-2"></i> Find Blood Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="main-footer pt-5 pb-3">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <!-- Brand col -->
+                <div class="col-lg-4">
+                    <a class="navbar-brand d-flex align-items-center gap-2 mb-3" href="index.html">
+                        <div class="brand-icon">
+                            <i class="bi bi-droplet-fill"></i>
+                        </div>
+                        <span class="brand-text text-white">Blood<span class="brand-accent">Link</span></span>
+                    </a>
+                    <p class="footer-desc">A professional blood donor management system built to connect donors with
+                        those in need — quickly, reliably, and securely.</p>
+                </div>
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="search.html">Find Donor</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                    </ul>
+                </div>
+                <!-- Blood Types -->
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Blood Groups</h6>
+                    <ul class="footer-links">
+                        <li><a href="search.html">A+ / A-</a></li>
+                        <li><a href="search.html">B+ / B-</a></li>
+                        <li><a href="search.html">O+ / O-</a></li>
+                        <li><a href="search.html">AB+ / AB-</a></li>
+                    </ul>
+                </div>
+                <!-- Contact -->
+                <div class="col-lg-4 col-md-4">
+                    <h6 class="footer-heading">Emergency Contact</h6>
+                    <div class="footer-contact">
+                        <div class="contact-item"><i class="bi bi-telephone-fill"></i> +91 98765 43210</div>
+                        <div class="contact-item"><i class="bi bi-envelope-fill"></i> help@bloodlink.in</div>
+                        <div class="contact-item"><i class="bi bi-geo-alt-fill"></i> India — Nationwide Service</div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider" />
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <p class="footer-copy mb-0">&copy; 2026 BloodLink. Built with <i class="bi bi-heart-fill text-red"></i>
+                    to save lives.</p>
+                <p class="footer-copy mb-0">Powered by Firebase &amp; Bootstrap 5</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar scroll effect -->
+    <script>
+        const navbar = document.getElementById('mainNavbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+    <script type="module" src="js/search.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Register as a blood donor on BloodLink — Help save lives in your city by joining our verified donor network." />
+    <title>Register as Donor | BloodLink</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Page-specific styles -->
+    <style>
+        /* ── Page Header ── */
+        .page-header {
+            background: linear-gradient(135deg, #7b241c 0%, #c0392b 50%, #e55039 100%);
+            padding: 120px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .page-header-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .page-header-sub {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1rem;
+            max-width: 500px;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* ── Registration Form Card ── */
+        .form-section {
+            background: #f8f9fa;
+            padding: 60px 0;
+            min-height: 60vh;
+        }
+
+        .register-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 48px rgba(0, 0, 0, 0.10);
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        .register-card-sidebar {
+            background: linear-gradient(160deg, #922b21, #c0392b, #e55039);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-sub {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .sidebar-checklist {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .sidebar-checklist li i {
+            color: #a8e6cf;
+            font-size: 1rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-blood-types {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 30px;
+        }
+
+        .sbt {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.25s;
+        }
+
+        .sbt:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: scale(1.05);
+        }
+
+        /* ── Form Body ── */
+        .form-body {
+            padding: 40px 36px;
+        }
+
+        .form-section-heading {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #c0392b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-heading::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e9ecef;
+        }
+
+        /* Form controls */
+        .form-label {
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 6px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1.5px solid #dee2e6;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            color: #343a40;
+            background: #f8f9fa;
+            transition: all 0.25s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #c0392b;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+            background: #fff;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #adb5bd;
+            font-size: 0.85rem;
+        }
+
+        /* Input group icon */
+        .input-group-text {
+            background: #f8f9fa;
+            border: 1.5px solid #dee2e6;
+            border-right: none;
+            color: #c0392b;
+            border-radius: 10px 0 0 10px;
+            padding: 11px 14px;
+        }
+
+        .input-group .form-control,
+        .input-group .form-select {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .input-group:focus-within .input-group-text {
+            border-color: #c0392b;
+        }
+
+        /* Blood group grid selector */
+        .blood-group-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .blood-group-grid input[type="radio"] {
+            display: none;
+        }
+
+        .blood-group-grid label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 6px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #6c757d;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            user-select: none;
+        }
+
+        .blood-group-grid input[type="radio"]:checked+label {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            border-color: #c0392b;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(192, 57, 43, 0.30);
+            transform: scale(1.05);
+        }
+
+        .blood-group-grid label:hover {
+            border-color: #c0392b;
+            color: #c0392b;
+            background: #fff;
+        }
+
+        /* Availability toggle */
+        .form-check-input:checked {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .form-switch .form-check-label {
+            font-size: 0.88rem;
+            color: #495057;
+        }
+
+        /* Submit button */
+        .btn-register {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            letter-spacing: 0.3px;
+            box-shadow: 0 6px 24px rgba(192, 57, 43, 0.35);
+            transition: all 0.3s;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(192, 57, 43, 0.45);
+            background: linear-gradient(135deg, #922b21, #c0392b);
+            color: #fff;
+        }
+
+        .btn-register:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+        }
+
+        /* Alerts */
+        .alert-success-custom {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 1.5px solid #28a745;
+            border-radius: 14px;
+            padding: 18px 22px;
+            color: #155724;
+        }
+
+        .alert-error-custom {
+            background: linear-gradient(135deg, #fdecea, #f9d6d5);
+            border: 1.5px solid #dc3545;
+            border-radius: 14px;
+            padding: 18px 22px;
+            color: #721c24;
+        }
+
+        .show-alert {
+            animation: alertIn 0.4s ease both;
+        }
+
+        .fade-out-alert {
+            animation: alertOut 0.4s ease both;
+        }
+
+        @keyframes alertIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes alertOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Required asterisk */
+        .req {
+            color: #c0392b;
+            margin-left: 2px;
+        }
+
+        /* Age hint */
+        #ageHint {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            color: #6c757d;
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 32px;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: #adb5bd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            background: #c0392b;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(192, 57, 43, 0.3);
+        }
+
+        .step-dot.done {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #e9ecef;
+            transition: background 0.3s;
+        }
+
+        .step-line.active {
+            background: #c0392b;
+        }
+
+        @media (max-width: 767.98px) {
+            .register-card-sidebar {
+                display: none;
+            }
+
+            .form-body {
+                padding: 28px 20px;
+            }
+
+            .blood-group-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .blood-group-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+
+            .blood-group-grid label {
+                font-size: 0.85rem;
+                padding: 10px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon"><i class="bi bi-droplet-fill"></i></div>
+                <span class="brand-text">Blood<span class="brand-accent">Link</span></span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i
+                                class="bi bi-house-door me-1"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="register.html"><i
+                                class="bi bi-person-plus me-1"></i>Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search.html"><i class="bi bi-search me-1"></i>Find
+                            Donor</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-nav-admin" href="admin.html"><i
+                                class="bi bi-shield-lock me-1"></i>Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== PAGE HEADER ====== -->
+    <header class="page-header">
+        <div class="container position-relative" style="z-index:2">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="index.html"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                    <li class="breadcrumb-item active">Register</li>
+                </ol>
+            </nav>
+            <h1 class="page-header-title mb-2">
+                <i class="bi bi-person-plus-fill me-3" style="font-size:0.9em;"></i>Become a Donor
+            </h1>
+            <p class="page-header-sub">
+                Join thousands of life-savers. Your registration takes less than 2 minutes and could save someone's life
+                today.
+            </p>
+        </div>
+    </header>
+
+    <!-- ====== FORM SECTION ====== -->
+    <section class="form-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 col-lg-11">
+
+                    <!-- Alerts -->
+                    <div id="successMsg" class="alert-success-custom d-none mb-4" role="alert">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                            <div>
+                                <strong>Registration Successful! 🎉</strong><br />
+                                <span>Thank you for registering as a donor. Your profile has been saved and you may now
+                                    be contacted in a blood emergency. You are a hero!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="errorMsg" class="alert-error-custom d-none mb-4" role="alert">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-4 text-danger"></i>
+                            <div>
+                                <strong>Registration Failed</strong><br />
+                                <span class="alert-message">An error occurred. Please try again.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card -->
+                    <div class="register-card">
+                        <div class="row g-0">
+
+                            <!-- ── Sidebar ── -->
+                            <div class="col-lg-4 register-card-sidebar">
+                                <div>
+                                    <div class="mb-2">
+                                        <div class="brand-icon mb-3" style="width:48px;height:48px;font-size:1.3rem;">
+                                            <i class="bi bi-droplet-fill"></i>
+                                        </div>
+                                        <h2 class="sidebar-title">Why Donate?</h2>
+                                        <p class="sidebar-sub">One donation can save up to 3 lives. Be part of our
+                                            verified donor network across India.</p>
+                                    </div>
+
+                                    <ul class="sidebar-checklist">
+                                        <li><i class="bi bi-check-circle-fill"></i>Safe, verified donor registration
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i>Your data is fully secured & private
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i>Be contacted only when needed</li>
+                                        <li><i class="bi bi-check-circle-fill"></i>Donate when you are available</li>
+                                        <li><i class="bi bi-check-circle-fill"></i>Help patients in your city instantly
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i>Get a digital donor certificate</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <p class="sidebar-sub mb-2" style="margin-top:24px;">We accept all blood groups:</p>
+                                    <div class="sidebar-blood-types">
+                                        <div class="sbt">A+</div>
+                                        <div class="sbt">A-</div>
+                                        <div class="sbt">B+</div>
+                                        <div class="sbt">B-</div>
+                                        <div class="sbt">O+</div>
+                                        <div class="sbt">O-</div>
+                                        <div class="sbt">AB+</div>
+                                        <div class="sbt">AB-</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── Form ── -->
+                            <div class="col-lg-8 form-body">
+                                <!-- Step indicator -->
+                                <div class="step-indicator">
+                                    <div class="step-dot active">1</div>
+                                    <div class="step-line"></div>
+                                    <div class="step-dot">2</div>
+                                    <div class="step-line"></div>
+                                    <div class="step-dot">3</div>
+                                </div>
+
+                                <form id="donorForm" novalidate>
+
+                                    <!-- ── Section 1: Personal Info ── -->
+                                    <div class="form-section-heading"><i class="bi bi-person-fill"></i> Personal
+                                        Information</div>
+                                    <div class="row g-3 mb-4">
+                                        <!-- Full Name -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="fullName">Full Name <span
+                                                    class="req">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                                <input type="text" class="form-control" id="fullName" name="fullName"
+                                                    placeholder="e.g. Rahul Sharma" maxlength="80" required />
+                                            </div>
+                                        </div>
+
+                                        <!-- Age -->
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="age">Age <span class="req">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                                <input type="number" class="form-control" id="age" name="age"
+                                                    placeholder="18-65" min="18" max="65" required />
+                                            </div>
+                                            <div id="ageHint">Age must be 18–65 years.</div>
+                                        </div>
+
+                                        <!-- Gender -->
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="gender">Gender <span
+                                                    class="req">*</span></label>
+                                            <select class="form-select" id="gender" name="gender" required>
+                                                <option value="" disabled selected>Select</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                                <option value="other">Other</option>
+                                                <option value="prefer-not">Prefer not to say</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Email -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="email">Email Address <span
+                                                    class="req">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                                <input type="email" class="form-control" id="email" name="email"
+                                                    placeholder="you@example.com" required />
+                                            </div>
+                                        </div>
+
+                                        <!-- Phone -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="phone">Mobile Number <span
+                                                    class="req">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                                                <input type="tel" class="form-control" id="phone" name="phone"
+                                                    placeholder="10-digit mobile" maxlength="10" required />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- ── Section 2: Blood & Location ── -->
+                                    <div class="form-section-heading"><i class="bi bi-droplet-fill"></i> Blood Group &
+                                        Location</div>
+
+                                    <!-- Blood Group Selector -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Blood Group <span class="req">*</span></label>
+                                        <div class="blood-group-grid" id="bloodGroupGrid" role="radiogroup"
+                                            aria-label="Select blood group">
+                                            <input type="radio" name="bloodGroup" id="bg-a-pos" value="A+">
+                                            <label for="bg-a-pos">A+</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-a-neg" value="A-">
+                                            <label for="bg-a-neg">A-</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-b-pos" value="B+">
+                                            <label for="bg-b-pos">B+</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-b-neg" value="B-">
+                                            <label for="bg-b-neg">B-</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-o-pos" value="O+">
+                                            <label for="bg-o-pos">O+</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-o-neg" value="O-">
+                                            <label for="bg-o-neg">O-</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-ab-pos" value="AB+">
+                                            <label for="bg-ab-pos">AB+</label>
+
+                                            <input type="radio" name="bloodGroup" id="bg-ab-neg" value="AB-">
+                                            <label for="bg-ab-neg">AB-</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mb-4">
+                                        <!-- City -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="city">City <span class="req">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                                <input type="text" class="form-control" id="city" name="city"
+                                                    placeholder="e.g. Mumbai" maxlength="60" required />
+                                            </div>
+                                        </div>
+
+                                        <!-- State -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="state">State <span
+                                                    class="req">*</span></label>
+                                            <select class="form-select" id="state" name="state" required>
+                                                <option value="" disabled selected>Select state…</option>
+                                                <option>Andhra Pradesh</option>
+                                                <option>Arunachal Pradesh</option>
+                                                <option>Assam</option>
+                                                <option>Bihar</option>
+                                                <option>Chhattisgarh</option>
+                                                <option>Delhi</option>
+                                                <option>Goa</option>
+                                                <option>Gujarat</option>
+                                                <option>Haryana</option>
+                                                <option>Himachal Pradesh</option>
+                                                <option>Jharkhand</option>
+                                                <option>Karnataka</option>
+                                                <option>Kerala</option>
+                                                <option>Madhya Pradesh</option>
+                                                <option>Maharashtra</option>
+                                                <option>Manipur</option>
+                                                <option>Meghalaya</option>
+                                                <option>Mizoram</option>
+                                                <option>Nagaland</option>
+                                                <option>Odisha</option>
+                                                <option>Punjab</option>
+                                                <option>Rajasthan</option>
+                                                <option>Sikkim</option>
+                                                <option>Tamil Nadu</option>
+                                                <option>Telangana</option>
+                                                <option>Tripura</option>
+                                                <option>Uttar Pradesh</option>
+                                                <option>Uttarakhand</option>
+                                                <option>West Bengal</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Location Options -->
+                                        <div class="col-12 mt-3 mb-2">
+                                            <label class="form-label d-block text-dark fw-bold mb-1">
+                                                <i class="bi bi-geo-alt-fill text-danger me-1"></i> Exact Location (For
+                                                Emergency Matching) <span class="text-danger">*</span>
+                                            </label>
+                                            <p class="text-muted mb-2" style="font-size: 0.8rem;">Click on the map to
+                                                drop a pin on your precise location, or use the auto-locator.</p>
+
+                                            <div id="donorMap"
+                                                style="height: 250px; width: 100%; border-radius: 12px; border: 2px solid #dee2e6; margin-bottom: 10px; z-index: 1;">
+                                            </div>
+
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                    id="getLocationBtn">
+                                                    <i class="bi bi-crosshair"></i> Auto-Locate Me
+                                                </button>
+                                                <span id="locationStatus" class="badge bg-secondary text-light">Pin Not
+                                                    Dropped</span>
+                                            </div>
+                                            <input type="hidden" id="latitude" name="latitude" required />
+                                            <input type="hidden" id="longitude" name="longitude" required />
+                                        </div>
+                                    </div>
+
+                                    <!-- ── Section 3: Donation Details ── -->
+                                    <div class="form-section-heading"><i class="bi bi-heart-pulse-fill"></i> Donation
+                                        Details</div>
+                                    <div class="row g-3 mb-4">
+                                        <!-- Last Donated -->
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="lastDonated">Last Donation Date</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i
+                                                        class="bi bi-calendar-check"></i></span>
+                                                <input type="date" class="form-control" id="lastDonated"
+                                                    name="lastDonated" max="" />
+                                            </div>
+                                            <div class="form-text" style="font-size:0.75rem">Leave blank if first-time
+                                                donor.</div>
+                                        </div>
+
+                                        <!-- Availability toggle -->
+                                        <div class="col-sm-6 d-flex align-items-center">
+                                            <div class="form-check form-switch ps-0 mt-3" style="padding-left: 0;">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <input class="form-check-input m-0" type="checkbox" id="available"
+                                                        name="available" role="switch" checked
+                                                        style="width:2.8em;height:1.5em;cursor:pointer;" />
+                                                    <label class="form-check-label" for="available">
+                                                        <strong>Available to donate now</strong><br />
+                                                        <small class="text-muted">Toggle off if temporarily
+                                                            unavailable</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Message -->
+                                        <div class="col-12">
+                                            <label class="form-label" for="donorMessage">Additional Note <small
+                                                    class="text-muted fw-normal">(optional)</small></label>
+                                            <textarea class="form-control" id="donorMessage" name="donorMessage"
+                                                rows="3" maxlength="300"
+                                                placeholder="e.g. Best time to contact me, preferred hospital, etc."></textarea>
+                                        </div>
+                                    </div>
+
+                                    <!-- Terms -->
+                                    <div class="mb-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="termsCheck" required />
+                                            <label class="form-check-label" for="termsCheck" style="font-size:0.85rem">
+                                                I confirm that the information provided is accurate, I am medically fit
+                                                to donate blood, and I agree to be contacted during blood emergencies.
+                                                <a href="#" class="text-red" style="color:#c0392b;">View Terms</a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit -->
+                                    <button type="submit" class="btn btn-register" id="submitBtn">
+                                        <span class="spinner-border spinner-border-sm d-none me-2" role="status"
+                                            id="btnSpinner"></span>
+                                        <span id="btnText">Register as Donor</span>
+                                        <i class="bi bi-arrow-right ms-2"></i>
+                                    </button>
+
+                                    <p class="text-center mt-3" style="font-size:0.8rem;color:#adb5bd;">
+                                        <i class="bi bi-shield-lock me-1"></i> Your data is secured and never shared
+                                        without consent.
+                                    </p>
+
+                                </form>
+                            </div><!-- /form-body -->
+                        </div><!-- /row -->
+                    </div><!-- /register-card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="main-footer pt-5 pb-3">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                    <div class="brand-icon"><i class="bi bi-droplet-fill"></i></div>
+                    <span class="brand-text text-white">Blood<span class="brand-accent">Link</span></span>
+                </a>
+                <p class="footer-copy mb-0">&copy; 2026 BloodLink — Saving Lives Together.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar scroll effect -->
+    <script>
+        const navbar = document.getElementById('mainNavbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+        // Set max date for last donated to today
+        document.getElementById('lastDonated').max = new Date().toISOString().split('T')[0];
+        // Terms checkbox must be checked before submit
+        document.getElementById('donorForm').addEventListener('submit', function (e) {
+            if (!document.getElementById('termsCheck').checked) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                const errEl = document.getElementById('errorMsg');
+                errEl.querySelector('.alert-message').textContent = 'Please accept the terms and conditions before submitting.';
+                errEl.classList.remove('d-none');
+                errEl.classList.add('show-alert');
+                errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, true); // capture phase — runs before donor.js handler
+    </script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Donor logic (ES6 Module) -->
+    <script type="module" src="js/donor.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="BloodLink Emergency Dashboard — Coordinate blood donors and hospitals efficiently during emergencies." />
+    <title>Emergency Dashboard | BloodLink</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 100px 0 30px;
+            color: #fff;
+        }
+
+        .map-container {
+            height: 500px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border: 2px solid #e9ecef;
+            z-index: 1;
+            /* Keep leaflet below modals */
+        }
+
+        .priority-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        .priority-high {
+            background-color: #dc3545;
+            box-shadow: 0 0 8px #dc3545;
+        }
+
+        .priority-medium {
+            background-color: #fd7e14;
+            box-shadow: 0 0 8px #fd7e14;
+        }
+
+        .priority-low {
+            background-color: #198754;
+            box-shadow: 0 0 8px #198754;
+        }
+
+        .req-card {
+            background: #fff;
+            border-left: 5px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .req-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .req-card.high {
+            border-left-color: #dc3545;
+        }
+
+        .req-card.medium {
+            border-left-color: #fd7e14;
+        }
+
+        .req-card.low {
+            border-left-color: #198754;
+        }
+
+        /* Match Panel */
+        .match-panel {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .pulse-marker {
+            background: rgba(220, 53, 69, 0.4);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar"
+        style="background: rgba(26, 26, 46, 0.95);">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon"><i class="bi bi-droplet-fill"></i></div>
+                <span class="brand-text">Blood<span class="brand-accent">Link</span></span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="dashboard.html"><i
+                                class="bi bi-geo-alt-fill me-1"></i>Live Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search.html">Find Donor</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-nav-admin" href="admin.html"><i
+                                class="bi bi-shield-lock me-1"></i>Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== HEADER ====== -->
+    <header class="dashboard-header">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1 text-white fw-bold"><i class="bi bi-activity text-danger me-2"></i>Emergency Command
+                    Center</h2>
+                <p class="text-light opacity-75 mb-0">Live geospatial tracking & intelligent donor matching system.</p>
+            </div>
+            <button class="btn btn-danger mt-3 mt-md-0 fw-bold px-4 rounded-pill" data-bs-toggle="modal"
+                data-bs-target="#requestModal">
+                <i class="bi bi-plus-circle-fill me-2"></i>Create Emergency Request
+            </button>
+        </div>
+    </header>
+
+    <!-- ====== MAIN DASHBOARD ====== -->
+    <section class="py-4 bg-light min-vh-100">
+        <div class="container">
+            <div class="row g-4">
+
+                <!-- MAP COLUMN -->
+                <div class="col-lg-7 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold m-0"><i class="bi bi-map-fill text-primary me-2"></i>Live Geospatial View
+                        </h5>
+                        <!-- Map Legend -->
+                        <div class="d-flex gap-3" style="font-size: 0.85rem;">
+                            <span><i class="bi bi-geo-alt-fill text-danger"></i> Hospital Request</span>
+                            <span><i class="bi bi-circle-fill text-primary" style="font-size: 0.6rem;"></i> Available
+                                Donor</span>
+                        </div>
+                    </div>
+                    <div id="map" class="map-container flex-grow-1"></div>
+                </div>
+
+                <!-- REQUESTS COLUMN -->
+                <div class="col-lg-5">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-list-task text-primary me-2"></i>Active Blood Requests
+                        <span id="reqCountBadget" class="badge bg-danger ms-2">0</span>
+                    </h5>
+
+                    <div id="requestsList" style="max-height: 520px; overflow-y: auto; padding-right: 5px;">
+                        <!-- Requests will be populated here -->
+                        <div class="text-center text-muted my-5">
+                            <div class="spinner-border text-danger mb-3" role="status"></div>
+                            <p>Loading active requests...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== NEW REQUEST MODAL ====== -->
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0" style="border-radius: 16px;">
+                <div class="modal-header text-white"
+                    style="background: linear-gradient(135deg, #c0392b, #e74c3c); border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-heart-pulse-fill me-2"></i>New Emergency Request
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="emergencyForm">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-uppercase">Patient Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="reqPatientName" required
+                                    placeholder="e.g. John Doe">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-uppercase">Hospital Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="reqHospital" required
+                                    placeholder="e.g. City General Hospital">
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-uppercase">Blood Group <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="reqBloodGroup" required>
+                                    <option value="" disabled selected>Select</option>
+                                    <option>A+</option>
+                                    <option>A-</option>
+                                    <option>B+</option>
+                                    <option>B-</option>
+                                    <option>O+</option>
+                                    <option>O-</option>
+                                    <option>AB+</option>
+                                    <option>AB-</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold small text-uppercase">Units Req. <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="reqUnits" min="1" required
+                                    placeholder="e.g. 2">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase">Priority Level <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="reqPriority" required>
+                                <option value="High">🔴 High (Critical, needed immediately)</option>
+                                <option value="Medium" selected>🟠 Medium (Needed today)</option>
+                                <option value="Low">🟢 Low (Needed within 48h)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase">Location <span
+                                    class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="reqLocationText"
+                                    placeholder="Fetching location..." readonly required>
+                                <button type="button" class="btn btn-outline-danger" id="reqLocationBtn"><i
+                                        class="bi bi-crosshair"></i> Locate</button>
+                            </div>
+                            <input type="hidden" id="reqLat">
+                            <input type="hidden" id="reqLng">
+                            <small class="text-muted d-block mt-1">We need exact coordinates to match nearby
+                                donors.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-uppercase">Description <small
+                                    class="text-muted text-lowercase fw-normal">(Optional)</small></label>
+                            <textarea class="form-control" id="reqDescription" rows="2"
+                                placeholder="Any specific details, contact alternate number, etc."></textarea>
+                        </div>
+
+                        <div id="reqAlert" class="alert alert-danger d-none py-2 px-3 small"></div>
+
+                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 mt-2" id="btnSubmitReq" disabled>
+                            Broadcast Emergency
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== SMART MATCHING MODAL ====== -->
+    <div class="modal fade" id="matchModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0" style="border-radius: 16px;">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-cpu text-primary me-2"></i>Smart Match Diagnostics
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div id="matchModalInfo" class="mb-4 bg-white p-3 rounded shadow-sm border">
+                        <!-- Request summary injected here -->
+                    </div>
+
+                    <h6 class="fw-bold mb-3"><i class="bi bi-people-fill me-2"></i>Compatible Nearby Donors</h6>
+                    <div id="matchList" class="match-panel custom-scrollbar">
+                        <div class="text-center py-4">
+                            <div class="spinner-grow text-danger mb-2" role="status"></div>
+                            <p class="text-muted mb-0">Running geospatial compatibility algorithms...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Map script -->
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+
+</html>

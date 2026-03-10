@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="Find blood donors and blood banks near you — search by blood group and city on BloodLink." />
+    <title>Find Donor &amp; Blood Bank | BloodLink</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <style>
+        /* ─────────────────── PAGE HEADER ─────────────────── */
+        .page-header {
+            background: linear-gradient(135deg, #7b241c 0%, #c0392b 50%, #e55039 100%);
+            padding: 120px 0 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .page-header-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .page-header-sub {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1rem;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .breadcrumb-item a {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .breadcrumb-item.active {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* ─────────────────── SEARCH BOX CARD ─────────────────── */
+        .search-box-wrap {
+            margin-top: -40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 16px 56px rgba(0, 0, 0, 0.14);
+            border: 1px solid #e9ecef;
+            padding: 36px 40px;
+        }
+
+        .search-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 4px;
+        }
+
+        .search-subtitle {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .form-label-styled {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .form-select-lg-custom {
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 13px 16px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            background-color: #f8f9fa;
+            transition: all 0.25s;
+            appearance: auto;
+        }
+
+        .form-select-lg-custom:focus {
+            border-color: #c0392b;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+            background: #fff;
+            outline: none;
+        }
+
+        .form-select-lg-custom.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .city-input-wrap {
+            position: relative;
+        }
+
+        .city-input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #c0392b;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .city-input {
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 13px 16px 13px 40px;
+            font-size: 0.95rem;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            transition: all 0.25s;
+            width: 100%;
+        }
+
+        .city-input:focus {
+            border-color: #c0392b;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+            background: #fff;
+            outline: none;
+        }
+
+        .city-input::placeholder {
+            color: #adb5bd;
+            font-size: 0.88rem;
+        }
+
+        .btn-search-main {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 13px 32px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            box-shadow: 0 6px 24px rgba(192, 57, 43, 0.35);
+            transition: all 0.3s;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-search-main:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px rgba(192, 57, 43, 0.45);
+            background: linear-gradient(135deg, #922b21, #c0392b);
+            color: #fff;
+        }
+
+        .btn-search-main:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+        }
+
+        /* Quick blood group buttons */
+        .quick-bg-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .quick-bg-btn {
+            padding: 6px 16px;
+            border: 1.5px solid #dee2e6;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #6c757d;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .quick-bg-btn:hover {
+            border-color: #c0392b;
+            color: #c0392b;
+            background: #fff;
+        }
+
+        .quick-bg-btn.active-bg {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            border-color: #c0392b;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(192, 57, 43, 0.25);
+        }
+
+        /* ─────────────────── RESULTS SECTION ─────────────────── */
+        .results-section {
+            background: #f8f9fa;
+            padding: 50px 0 70px;
+        }
+
+        #resultsSection {
+            display: none;
+        }
+
+        #resultsSection.d-block {
+            display: block !important;
+        }
+
+        .search-summary-bar {
+            background: linear-gradient(135deg, #922b21, #c0392b);
+            border-radius: 14px;
+            padding: 14px 22px;
+            margin-bottom: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .summary-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .summary-text strong {
+            color: #fff;
+        }
+
+        /* Result section tabs */
+        .result-section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .result-section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .icon-donor {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+        }
+
+        .icon-bank {
+            background: linear-gradient(135deg, #1a5276, #2e86c1);
+        }
+
+        .result-section-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        .result-count-badge {
+            background: #c0392b;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-left: 6px;
+        }
+
+        .result-count-badge.bank {
+            background: #2e86c1;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #c0392b, transparent);
+            border: none;
+            margin-bottom: 24px;
+        }
+
+        .section-divider.bank-line {
+            background: linear-gradient(90deg, #2e86c1, transparent);
+        }
+
+        /* ─────────────────── RESULT CARDS ─────────────────── */
+        .result-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Donor card */
+        .result-card-header {
+            padding: 18px 18px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .donor-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(192, 57, 43, 0.25);
+        }
+
+        .donor-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .donor-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .donor-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .blood-badge {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(192, 57, 43, 0.3);
+        }
+
+        .bank-badge {
+            background: linear-gradient(135deg, #1a5276, #2e86c1);
+            box-shadow: 0 3px 10px rgba(46, 134, 193, 0.3);
+        }
+
+        .result-card-body {
+            padding: 14px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.83rem;
+            color: #6c757d;
+        }
+
+        .info-row i {
+            color: #c0392b;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .info-row strong {
+            color: #343a40;
+        }
+
+        .result-card-footer {
+            padding: 12px 18px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            background: #fafafa;
+        }
+
+        .btn-contact {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            flex: 1;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(192, 57, 43, 0.35);
+            color: #fff;
+        }
+
+        .btn-contact[disabled] {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .btn-visit {
+            background: linear-gradient(135deg, #1a5276, #2e86c1);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            text-align: center;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-visit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(46, 134, 193, 0.35);
+            color: #fff;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1.5px solid #dee2e6;
+            background: #fff;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .btn-icon:hover {
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        /* Bank card top */
+        .bank-card-top {
+            padding: 18px 18px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .bank-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1a5276, #2e86c1);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(46, 134, 193, 0.25);
+        }
+
+        .bank-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bank-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Units bar */
+        .units-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .units-label {
+            font-size: 0.78rem;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .units-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .units-value.high {
+            color: #27ae60;
+        }
+
+        .units-value.mid {
+            color: #e67e22;
+        }
+
+        .units-value.critical {
+            color: #c0392b;
+        }
+
+        .units-value small {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #adb5bd;
+        }
+
+        .units-bar {
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 50px;
+            overflow: hidden;
+            margin: 6px 0;
+        }
+
+        .units-fill {
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.8s ease;
+        }
+
+        .units-fill.high {
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+
+        .units-fill.mid {
+            background: linear-gradient(90deg, #d35400, #e67e22);
+        }
+
+        .units-fill.critical {
+            background: linear-gradient(90deg, #922b21, #c0392b);
+        }
+
+        .unit-status-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .unit-status-badge.high {
+            background: #d4efdf;
+            color: #1e8449;
+        }
+
+        .unit-status-badge.mid {
+            background: #fdebd0;
+            color: #9c640c;
+        }
+
+        .unit-status-badge.critical {
+            background: #fadbd8;
+            color: #922b21;
+        }
+
+        /* ─────────────────── EMPTY / ERROR STATES ─────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            background: #fff;
+            border-radius: 16px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .error-state {
+            border-color: #f5c6cb;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            background: #fee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #c0392b;
+            margin: 0 auto 16px;
+        }
+
+        .empty-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 6px;
+        }
+
+        .empty-desc {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin: 0;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+
+        /* ─────────────────── INITIAL PROMPT CARD ─────────────────── */
+        .prompt-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 56px 24px;
+            text-align: center;
+            border: 2px dashed #dee2e6;
+        }
+
+        .prompt-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fdecea, #fadbd8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #c0392b;
+            margin: 0 auto 20px;
+        }
+
+        .prompt-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .prompt-desc {
+            font-size: 0.88rem;
+            color: #6c757d;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+
+        /* ─────────────────── RESPONSIVE ─────────────────── */
+        @media (max-width: 767.98px) {
+            .search-box-card {
+                padding: 24px 18px;
+            }
+
+            .quick-bg-grid {
+                gap: 6px;
+            }
+
+            .quick-bg-btn {
+                padding: 5px 12px;
+                font-size: 0.78rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ====== NAVBAR ====== -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <div class="brand-icon"><i class="bi bi-droplet-fill"></i></div>
+                <span class="brand-text">Blood<span class="brand-accent">Link</span></span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i
+                                class="bi bi-house-door me-1"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.html"><i
+                                class="bi bi-person-plus me-1"></i>Register</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="search.html"><i
+                                class="bi bi-search me-1"></i>Find Donor</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-nav-admin" href="admin.html"><i
+                                class="bi bi-shield-lock me-1"></i>Admin</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ====== PAGE HEADER ====== -->
+    <header class="page-header">
+        <div class="container position-relative" style="z-index:2;">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="index.html"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                    <li class="breadcrumb-item active">Find Donor</li>
+                </ol>
+            </nav>
+            <h1 class="page-header-title mb-2">
+                <i class="bi bi-search me-3" style="font-size:0.85em;"></i>Find Blood &amp; Donors
+            </h1>
+            <p class="page-header-sub">
+                Search for verified donors or check blood availability at nearby blood banks — instantly.
+            </p>
+        </div>
+    </header>
+
+    <!-- ====== SEARCH BOX ====== -->
+    <section class="pb-0" style="background:#f8f9fa; padding-top: 0;">
+        <div class="container search-box-wrap">
+            <div class="search-box-card">
+                <div class="row align-items-center mb-4">
+                    <div class="col">
+                        <h2 class="search-title">Search Donors &amp; Blood Banks</h2>
+                        <p class="search-subtitle">Select blood group and optional city to begin your search.</p>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge"
+                            style="background:#fdecea; color:#c0392b; font-size:0.75rem; padding:6px 12px; border-radius:50px; font-weight:700;">
+                            <i class="bi bi-circle-fill me-1" style="font-size:0.45rem; vertical-align: middle;"></i>
+                            Live Data
+                        </span>
+                    </div>
+                </div>
+
+                <form id="searchForm" novalidate>
+                    <div class="row g-3 align-items-end">
+
+                        <!-- Blood Group -->
+                        <div class="col-md-4">
+                            <label class="form-label-styled" for="searchBloodGroup">
+                                <i class="bi bi-droplet-fill me-1" style="color:#c0392b;"></i> Blood Group <span
+                                    style="color:#c0392b;">*</span>
+                            </label>
+                            <select class="form-select-lg-custom w-100" id="searchBloodGroup" name="bloodGroup"
+                                required>
+                                <option value="" disabled selected>— Select Blood Group —</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A− </option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B−</option>
+                                <option value="O+">O+ </option>
+                                <option value="O-">O−</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB− </option>
+                            </select>
+                        </div>
+
+                        <!-- City -->
+                        <div class="col-md-4">
+                            <label class="form-label-styled" for="searchCity">
+                                <i class="bi bi-geo-alt-fill me-1" style="color:#c0392b;"></i> City / Location
+                                <span
+                                    style="color:#adb5bd; font-weight:400; text-transform:none; letter-spacing:0;">(optional)</span>
+                            </label>
+                            <div class="city-input-wrap">
+                                <i class="bi bi-geo-alt city-input-icon"></i>
+                                <input type="text" class="city-input" id="searchCity" name="city"
+                                    placeholder="e.g. Mumbai, Delhi, Pune…" maxlength="60" />
+                            </div>
+                        </div>
+
+                        <!-- Search Button -->
+                        <div class="col-md-4">
+                            <button type="submit" class="btn-search-main" id="searchBtn">
+                                <span class="spinner-border spinner-border-sm d-none" role="status"
+                                    id="searchSpinner"></span>
+                                <i class="bi bi-search" id="searchIcon"></i>
+                                <span id="searchBtnText">Search Now</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Quick blood group shortcuts -->
+                    <div class="mt-3">
+                        <span
+                            style="font-size:0.75rem; color:#adb5bd; font-weight:600; text-transform:uppercase; letter-spacing:0.8px;">Quick
+                            Select:</span>
+                        <div class="quick-bg-grid">
+                            <button type="button" class="quick-bg-btn" data-bg="A+" id="qbg-a-pos">A+</button>
+                            <button type="button" class="quick-bg-btn" data-bg="A-" id="qbg-a-neg">A−</button>
+                            <button type="button" class="quick-bg-btn" data-bg="B+" id="qbg-b-pos">B+</button>
+                            <button type="button" class="quick-bg-btn" data-bg="B-" id="qbg-b-neg">B−</button>
+                            <button type="button" class="quick-bg-btn" data-bg="O+" id="qbg-o-pos">O+</button>
+                            <button type="button" class="quick-bg-btn" data-bg="O-" id="qbg-o-neg">O−</button>
+                            <button type="button" class="quick-bg-btn" data-bg="AB+" id="qbg-ab-pos">AB+</button>
+                            <button type="button" class="quick-bg-btn" data-bg="AB-" id="qbg-ab-neg">AB−</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== RESULTS SECTION ====== -->
+    <section class="results-section">
+        <div class="container">
+
+            <!-- Search summary bar -->
+            <div class="search-summary-bar d-none" id="searchSummary">
+                <div>
+                    <i class="bi bi-funnel-fill me-2" style="color:rgba(255,255,255,0.6);"></i>
+                    <span class="summary-text" id="summaryText">Results will appear here</span>
+                </div>
+                <a href="search.html" class="btn btn-sm"
+                    style="background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.3); border-radius:8px; font-size:0.78rem; font-weight:600;">
+                    <i class="bi bi-arrow-clockwise me-1"></i> New Search
+                </a>
+            </div>
+
+            <!-- Results or prompt -->
+            <div id="resultsSection">
+
+                <!-- ── DONOR RESULTS ── -->
+                <div id="donorSection">
+                    <div class="result-section-header">
+                        <div class="result-section-icon icon-donor">
+                            <i class="bi bi-person-heart"></i>
+                        </div>
+                        <div>
+                            <h3 class="result-section-title">
+                                Available Donors
+                                <span class="result-count-badge" id="donorCount">—</span>
+                            </h3>
+                            <p class="mb-0" style="font-size:0.8rem; color:#6c757d;">Verified registered donors matching
+                                your search</p>
+                        </div>
+                    </div>
+                    <hr class="section-divider" />
+                    <div class="row g-4" id="donorResults">
+                        <!-- Cards injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Spacer -->
+                <div class="my-5"></div>
+
+                <!-- ── BLOOD BANK RESULTS ── -->
+                <div id="bankSection">
+                    <div class="result-section-header">
+                        <div class="result-section-icon icon-bank">
+                            <i class="bi bi-hospital-fill"></i>
+                        </div>
+                        <div>
+                            <h3 class="result-section-title">
+                                Nearby Blood Banks
+                                <span class="result-count-badge bank" id="bankCount">—</span>
+                            </h3>
+                            <p class="mb-0" style="font-size:0.8rem; color:#6c757d;">Blood banks with available units
+                                for the selected group</p>
+                        </div>
+                    </div>
+                    <hr class="section-divider bank-line" />
+                    <div class="row g-4" id="bankResults">
+                        <!-- Cards injected by JS -->
+                    </div>
+                </div>
+
+            </div><!-- /resultsSection -->
+
+            <!-- Initial prompt (shown before search) -->
+            <div id="initialPrompt" class="prompt-card">
+                <div class="prompt-icon">
+                    <i class="bi bi-droplet-fill"></i>
+                </div>
+                <h4 class="prompt-title">Ready to Find Blood?</h4>
+                <p class="prompt-desc">
+                    Select a blood group above and optionally enter a city to search our donor database and blood bank
+                    inventory.
+                </p>
+                <div class="mt-4 d-flex flex-wrap gap-3 justify-content-center">
+                    <div class="d-flex align-items-center gap-2 text-muted" style="font-size:0.82rem;">
+                        <i class="bi bi-people-fill text-danger"></i> 5,200+ Donors
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-muted" style="font-size:0.82rem;">
+                        <i class="bi bi-hospital-fill" style="color:#2e86c1;"></i> 18+ Blood Banks
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-muted" style="font-size:0.82rem;">
+                        <i class="bi bi-lightning-charge-fill text-warning"></i> Real-time results
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="main-footer pt-5 pb-3">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4">
+                    <a class="navbar-brand d-flex align-items-center gap-2 mb-3" href="index.html">
+                        <div class="brand-icon"><i class="bi bi-droplet-fill"></i></div>
+                        <span class="brand-text text-white">Blood<span class="brand-accent">Link</span></span>
+                    </a>
+                    <p class="footer-desc">A professional blood donor management system built to connect donors with
+                        those in need — quickly and securely.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="search.html">Find Donor</a></li>
+                        <li><a href="admin.html">Admin</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6">
+                    <h6 class="footer-heading">Blood Groups</h6>
+                    <ul class="footer-links">
+                        <li><a href="search.html">A+ / A-</a></li>
+                        <li><a href="search.html">B+ / B-</a></li>
+                        <li><a href="search.html">O+ / O-</a></li>
+                        <li><a href="search.html">AB+ / AB-</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h6 class="footer-heading">Emergency Contact</h6>
+                    <div class="footer-contact">
+                        <div class="contact-item"><i class="bi bi-telephone-fill"></i> +91 98765 43210</div>
+                        <div class="contact-item"><i class="bi bi-envelope-fill"></i> help@bloodlink.in</div>
+                        <div class="contact-item"><i class="bi bi-geo-alt-fill"></i> India — Nationwide Service</div>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider" />
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <p class="footer-copy mb-0">&copy; 2026 BloodLink. Built with <i class="bi bi-heart-fill"
+                        style="color:#e74c3c;"></i> to save lives.</p>
+                <p class="footer-copy mb-0">Powered by Firebase &amp; Bootstrap 5</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Navbar scroll + show/hide initial prompt -->
+    <script>
+        const navbar = document.getElementById('mainNavbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Hide initial prompt when results section becomes visible
+        const observer = new MutationObserver(() => {
+            const rs = document.getElementById('resultsSection');
+            const ip = document.getElementById('initialPrompt');
+            if (rs && !rs.classList.contains('d-none') && rs.style.display !== 'none') {
+                ip.style.display = 'none';
+            }
+        });
+        observer.observe(document.getElementById('resultsSection'), { attributes: true, attributeFilter: ['class', 'style'] });
+    </script>
+
+    <!-- Search Logic (ES6 Module) -->
+    <script type="module" src="js/search.js"></script>
+</body>
+
+</html>

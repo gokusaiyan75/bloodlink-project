@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BloodLink — Login</title>
+    <meta name="description" content="Login to BloodLink, the professional blood donor management system." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --red-dark: #8B0000;
+            --red-main: #C0392B;
+            --red-bright: #E74C3C;
+            --red-glow: rgba(192, 57, 43, 0.35);
+            --bg: #0d0d0d;
+            --surface: #151515;
+            --card: #1a1a1a;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f0f0f0;
+            --muted: #888;
+            --input-bg: #111;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.18;
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--red-main);
+            top: -120px;
+            left: -100px;
+            animation-duration: 14s;
+        }
+
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: #8B0000;
+            bottom: -80px;
+            right: -60px;
+            animation-duration: 10s;
+            animation-delay: -4s;
+        }
+
+        .blob-3 {
+            width: 250px;
+            height: 250px;
+            background: var(--red-bright);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 8s;
+            animation-delay: -2s;
+            opacity: 0.08;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(30px, 40px) scale(1.08);
+            }
+        }
+
+        /* Grid lines overlay */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* Main card */
+        .card-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            width: 900px;
+            max-width: 96vw;
+            min-height: 540px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border);
+            animation: slideUp .55s cubic-bezier(.22, 1, .36, 1) both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Left panel */
+        .panel-left {
+            flex: 1;
+            background: linear-gradient(145deg, #1a0404, #2c0808, #1a0404);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 36px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-left::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(192, 57, 43, 0.3) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.15);
+                opacity: 0.5;
+            }
+        }
+
+        .logo-icon {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--red-main), var(--red-dark));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px var(--red-glow);
+            font-size: 36px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, #f87171);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .brand-tagline {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+            text-align: center;
+            line-height: 1.6;
+            max-width: 200px;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 24px;
+            margin-top: 36px;
+            position: relative;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--red-bright);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-top: 2px;
+        }
+
+        .stat-divider {
+            width: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Right panel — form */
+        .panel-right {
+            flex: 1.2;
+            background: var(--card);
+            padding: 52px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            margin-bottom: 36px;
+        }
+
+        .form-eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--red-bright);
+            margin-bottom: 8px;
+        }
+
+        .form-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .form-sub {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            background: var(--input-bg);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 9px 0;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all .25s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--red-main), var(--red-dark));
+            color: #fff;
+            box-shadow: 0 4px 14px var(--red-glow);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #fff;
+        }
+
+        /* Form fields */
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.55);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 7px;
+        }
+
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--muted);
+            font-size: 16px;
+            pointer-events: none;
+            transition: color .25s;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: border-color .25s, box-shadow .25s;
+            outline: none;
+        }
+
+        .field input::placeholder {
+            color: #444;
+        }
+
+        .field input:focus {
+            border-color: var(--red-main);
+            box-shadow: 0 0 0 3px var(--red-glow);
+        }
+
+        .field input:focus+.input-icon,
+        .input-wrap:focus-within .input-icon {
+            color: var(--red-bright);
+        }
+
+        /* Role selector */
+        .role-select {
+            width: 100%;
+            padding: 13px 14px 13px 42px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            cursor: pointer;
+            transition: border-color .25s, box-shadow .25s;
+            -webkit-appearance: none;
+        }
+
+        .role-select option {
+            background: #1a1a1a;
+        }
+
+        .role-select:focus {
+            border-color: var(--red-main);
+            box-shadow: 0 0 0 3px var(--red-glow);
+        }
+
+        /* Row */
+        .row {
+            display: flex;
+            gap: 14px;
+        }
+
+        .row .field {
+            flex: 1;
+        }
+
+        /* Remember me */
+        .extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            margin-top: -4px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--red-main);
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: var(--red-bright);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity .2s;
+        }
+
+        .forgot-link:hover {
+            opacity: .75;
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--red-bright), var(--red-dark));
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 6px 24px var(--red-glow);
+            letter-spacing: .02em;
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity .25s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 32px var(--red-glow);
+        }
+
+        .btn-submit:hover::after {
+            opacity: 1;
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Guest quick access */
+        .btn-guest {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all .25s;
+            letter-spacing: .02em;
+        }
+
+        .btn-guest:hover {
+            border-color: var(--red-main);
+            color: var(--red-bright);
+            background: rgba(192, 57, 43, 0.05);
+        }
+
+        /* Register panel (hidden by default) */
+        #register-panel {
+            display: none;
+        }
+
+        /* Error / success messages */
+        .msg {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .msg.error {
+            background: rgba(231, 76, 60, 0.12);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #f87171;
+        }
+
+        .msg.success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: #4ade80;
+        }
+
+        /* Responsive */
+        @media (max-width: 680px) {
+            .panel-left {
+                display: none;
+            }
+
+            .panel-right {
+                padding: 40px 28px;
+            }
+
+            .card-wrapper {
+                max-width: 100vw;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+        }
+
+        /* Loading spinner inside button */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <div class="card-wrapper">
+        <!-- Left panel -->
+        <div class="panel-left">
+            <div class="logo-icon">🩸</div>
+            <div class="brand-title">BloodLink</div>
+            <div class="brand-tagline">Connecting donors with those in need, saving lives every day.</div>
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-num">12K+</div>
+                    <div class="stat-label">Donors</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <div class="stat-num">8.4K</div>
+                    <div class="stat-label">Lives Saved</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <div class="stat-num">98%</div>
+                    <div class="stat-label">Success</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right panel -->
+        <div class="panel-right">
+            <div class="form-header">
+                <div class="form-eyebrow">Blood Donor System</div>
+                <div class="form-title">Welcome back 👋</div>
+                <div class="form-sub">Sign in to your account to continue</div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs" role="tablist">
+                <button class="tab-btn active" id="tab-login" role="tab" onclick="switchTab('login')">Sign In</button>
+                <button class="tab-btn" id="tab-register" role="tab" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- LOGIN PANEL -->
+            <div id="login-panel">
+                <div class="msg error" id="login-error"></div>
+
+                <div class="field">
+                    <label for="login-email">Email Address</label>
+                    <div class="input-wrap">
+                        <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"
+                            required />
+                        <span class="input-icon">✉️</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="login-password" placeholder="••••••••"
+                            autocomplete="current-password" required />
+                        <span class="input-icon">🔒</span>
+                    </div>
+                </div>
+
+                <div class="extras">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me" />
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button class="btn-submit" id="login-btn" onclick="handleLogin()">Sign In &rarr;</button>
+
+                <div class="divider">or</div>
+                <button class="btn-guest" onclick="handleGuest()">Continue as Guest</button>
+            </div>
+
+            <!-- REGISTER PANEL -->
+            <div id="register-panel">
+                <div class="msg error" id="reg-error"></div>
+                <div class="msg success" id="reg-success"></div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="reg-firstname">First Name</label>
+                        <div class="input-wrap">
+                            <input type="text" id="reg-firstname" placeholder="John" required />
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="reg-lastname">Last Name</label>
+                        <div class="input-wrap">
+                            <input type="text" id="reg-lastname" placeholder="Doe" required />
+                            <span class="input-icon">👤</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reg-email">Email Address</label>
+                    <div class="input-wrap">
+                        <input type="email" id="reg-email" placeholder="you@example.com" required />
+                        <span class="input-icon">✉️</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="field">
+                        <label for="reg-role">Role</label>
+                        <div class="input-wrap">
+                            <select class="role-select" id="reg-role">
+                                <option value="donor">Donor</option>
+                                <option value="recipient">Recipient</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <span class="input-icon">🏷️</span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="reg-blood">Blood Group</label>
+                        <div class="input-wrap">
+                            <select class="role-select" id="reg-blood">
+                                <option>A+</option>
+                                <option>A-</option>
+                                <option>B+</option>
+                                <option>B-</option>
+                                <option>AB+</option>
+                                <option>AB-</option>
+                                <option>O+</option>
+                                <option>O-</option>
+                            </select>
+                            <span class="input-icon">🩸</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="reg-password">Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="reg-password" placeholder="Min. 8 characters" required />
+                        <span class="input-icon">🔒</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="reg-btn" onclick="handleRegister()">Create Account &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const loginPanel = document.getElementById('login-panel');
+            const registerPanel = document.getElementById('register-panel');
+            const tabLogin = document.getElementById('tab-login');
+            const tabReg = document.getElementById('tab-register');
+
+            if (tab === 'login') {
+                loginPanel.style.display = 'block';
+                registerPanel.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabReg.classList.remove('active');
+            } else {
+                loginPanel.style.display = 'none';
+                registerPanel.style.display = 'block';
+                tabLogin.classList.remove('active');
+                tabReg.classList.add('active');
+            }
+        }
+
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            if (loading) {
+                btn.innerHTML = '<span class="spinner"></span> Please wait...';
+                btn.disabled = true;
+            } else {
+                btn.disabled = false;
+            }
+        }
+
+        function showMsg(id, text) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.style.display = 'block';
+        }
+
+        function hideMsg(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            hideMsg('login-error');
+
+            if (!email || !password) {
+                showMsg('login-error', '⚠️ Please fill in all fields.');
+                return;
+            }
+            if (!email.includes('@')) {
+                showMsg('login-error', '⚠️ Please enter a valid email address.');
+                return;
+            }
+
+            setLoading('login-btn', true);
+            setTimeout(() => {
+                setLoading('login-btn', false);
+                document.getElementById('login-btn').innerHTML = '✅ Signed In Successfully!';
+                setTimeout(() => {
+                    document.getElementById('login-btn').innerHTML = 'Sign In &rarr;';
+                }, 2000);
+            }, 1500);
+        }
+
+        function handleRegister() {
+            const first = document.getElementById('reg-firstname').value.trim();
+            const last = document.getElementById('reg-lastname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            hideMsg('reg-error');
+            hideMsg('reg-success');
+
+            if (!first || !last || !email || !password) {
+                showMsg('reg-error', '⚠️ Please fill in all required fields.');
+                return;
+            }
+            if (password.length < 8) {
+                showMsg('reg-error', '⚠️ Password must be at least 8 characters.');
+                return;
+            }
+
+            setLoading('reg-btn', true);
+            setTimeout(() => {
+                setLoading('reg-btn', false);
+                showMsg('reg-success', '🎉 Account created! You can now sign in.');
+                document.getElementById('reg-btn').innerHTML = 'Create Account &rarr;';
+                setTimeout(() => switchTab('login'), 2000);
+            }, 1500);
+        }
+
+        function handleGuest() {
+            alert('Continuing as Guest — redirecting to donor search...');
+        }
+    </script>
+</body>
+
+</html>
